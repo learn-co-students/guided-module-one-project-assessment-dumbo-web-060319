@@ -1,5 +1,6 @@
 class Wrestler < ActiveRecord::Base
   has_many :matches
+  
   has_many :wrestler_one_matches, class_name: "Match", foreign_key: :wrestler_one_id # matches where I've fought as wrestler_one
   has_many :wrestler_two_matches, class_name: "Match", foreign_key: :wrestler_two_id # matches where I've fought as wrestler_two
 
