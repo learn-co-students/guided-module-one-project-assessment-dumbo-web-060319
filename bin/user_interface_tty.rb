@@ -1,23 +1,70 @@
 require 'pry'
 
-def tty_start_a_fight
-all_wrestlers = Wrestler.all.map {|wrestler| wrestler.name}
-
-  wrestler_one = TTY::Prompt.new.select("Who will you be?", all_wrestlers)
-  wrestler_two = TTY::Prompt.new.select("OH MY GOD IT'S #{wrestler_one}!!! Who are you squaring up against?", all_wrestlers.name) 
+# all_wrestlers = Wrestler.all.map {|wrestler| wrestler}
+#   $w1 = TTY::Prompt.new.select("Who will you be?", all_wrestlers)
+#   $w2 = TTY::Prompt.new.select("OH MY GOD IT'S #{$w1}!!! Who are you squaring up against?", all_wrestlers) 
   
-  puts "#{wrestler_one} vs. #{wrestler_two}! This one will be a slobberknocker folks!"
-  new_match = Match.create(wrestler_one: wrestler_one, wrestler_two: wrestler_two)
-  # tty_assign_show
+#   puts "#{$w1} vs. #{$w2}! This one will be a slobberknocker folks!"
+#   new_match = Match.create(wrestler_one: $wrestler_one, wrestler_two: $wrestler_two)
+
+# def tty_select_wrestler_one
+#   TTY::Prompt.new.select("Who will you be?") do |menu|
+#     Wrestler.all.each do |wrestler|
+#       $w1 = menu.choice "#{wrestler.name}", value: 1 => -> do tty_select_wrestler_two end
+#       end
+#     end
+#   end
+  
+
+def tty_select_wrestler_one
+TTY::Prompt.new.select("Who will you be?") do |menu|
+  Wrestler.all.each do |wrestler|
+    menu.choice "#{wrestler.name}" => -> do
+      $w1 = wrestler
+      tty_select_wrestler_two
+      end
+    end
+  end
+end 
+
+def tty_select_wrestler_two
+  TTY::Prompt.new.select("Who will you face?") do |menu|
+    Wrestler.all.each do |wrestler|
+      menu.choice "#{wrestler.name}" => -> do
+        $w2 = wrestler
+        tty_create_match
+      end
+    end
+  end
+end 
+
+def tty_create_match
+  $new_match = Match.create(wrestler_one: $w1, wrestler_two: $w2)
+  tty_choose_show
 end
 
-def tty_assign_show
-
-  all_shows = Show.all.map {|show| show}
-  assign_show = TTY::Prompt.new.select("What show you wanna wrassle on?", all_shows)
-  match_on_show = Match.last.update(show_id: assign_show)
-
+def tty_choose_show
+  TTY::Prompt.new.select("What show you wanna wrassle on?") do |menu|
+    Show.all.each do |show|
+      menu.choice "#{show.name}" => -> do
+        $show = show
+        tty_assign_show_a_match
+    end
+  end
+end
 end 
+
+def tty_assign_show_a_match
+  Match.last.update(show: $show)
+end 
+
+# def tty_assign_show
+#   all_shows = Show.all.map {|show| show.name}
+#   assign_show = TTY::Prompt.new.select("What show you wanna wrassle on?", all_shows)
+#   match_on_show = Match.last.update(show_id: assign_show)
+#   binding.pry
+#   puts "#{$w1} vs. #{$w2} at #{assign_show}!!"
+# end 
 
   puts "Bah gawd welcome to WRASSLIN!!!!™"
   puts ""
