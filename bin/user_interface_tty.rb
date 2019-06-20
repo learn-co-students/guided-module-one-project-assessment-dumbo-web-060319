@@ -1,3 +1,23 @@
+require 'pry'
+
+def tty_start_a_fight
+all_wrestlers = Wrestler.all.map {|wrestler| wrestler.name}
+
+  wrestler_one = TTY::Prompt.new.select("Who will you be?", all_wrestlers)
+  wrestler_two = TTY::Prompt.new.select("OH MY GOD IT'S #{wrestler_one}!!! Who are you squaring up against?", all_wrestlers.name) 
+  
+  puts "#{wrestler_one} vs. #{wrestler_two}! This one will be a slobberknocker folks!"
+  new_match = Match.create(wrestler_one: wrestler_one, wrestler_two: wrestler_two)
+  # tty_assign_show
+end
+
+def tty_assign_show
+
+  all_shows = Show.all.map {|show| show}
+  assign_show = TTY::Prompt.new.select("What show you wanna wrassle on?", all_shows)
+  match_on_show = Match.last.update(show_id: assign_show)
+
+end 
 
   puts "Bah gawd welcome to WRASSLIN!!!!™"
   puts ""
@@ -19,7 +39,6 @@
   end 
   
   def tty_start_over
-
     puts "OMG REALLY!?!??!"
     puts ""
     puts "Let's try this again"
@@ -61,3 +80,5 @@
       Wrestler.last.delete
     end 
   end 
+
+ 
